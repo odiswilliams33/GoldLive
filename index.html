@@ -514,6 +514,7 @@
                 color: #667eea;
                 font-size: 0.9em;
                 cursor: pointer;
+                padding: 10px;
             }
 
             /* Expanded state - show all fields */
@@ -865,12 +866,21 @@
         // Add initial item
         addItem();
 
-        // Handle row expansion on mobile (click anywhere on row except inputs)
+        // Handle row expansion on mobile - only when clicking the triangle/arrow
         document.addEventListener('click', function(e) {
             if (window.innerWidth <= 768) {
                 const row = e.target.closest('tbody tr');
-                if (row && !e.target.matches('input, select, button')) {
-                    row.classList.toggle('expanded');
+                // Only expand if clicking on the ::after pseudo-element area (right side of card)
+                if (row && e.target.tagName === 'TR') {
+                    // Calculate if click is in the triangle area (right 40px of the row)
+                    const rect = row.getBoundingClientRect();
+                    const clickX = e.clientX;
+                    const rightEdge = rect.right;
+                    
+                    // If click is within 40px of the right edge, toggle expansion
+                    if (clickX >= rightEdge - 40) {
+                        row.classList.toggle('expanded');
+                    }
                 }
             }
         });
